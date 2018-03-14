@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classes from './App.css';
 import Person from './Person/Person';
-
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 class App extends Component {
   state = {
     dogs: [
@@ -13,40 +13,37 @@ class App extends Component {
 
   };
 
- deletePersonHandler = (personIndex) =>{
-const persons = [...this.state.dogs];
-persons.splice(personIndex,1);
-this.setState({dogs: persons});
-};
+  deletePersonHandler = (personIndex) =>{
+    const persons = [...this.state.dogs];
+    persons.splice(personIndex,1);
+    this.setState({dogs: persons});
+  };
 
- ncHandler = (event,id) =>{
+  ncHandler = (event,id) =>{
 
-   const personIndex = this.state.dogs.findIndex(p=>{
-     return p.id === id;
-   });
+    const personIndex = this.state.dogs.findIndex(p=>{
+      return p.id === id;
+    });
 
-   const person = {
-     ...this.state.dogs[personIndex]
-   };
+    const person = {
+      ...this.state.dogs[personIndex]
+    };
 
-   person.name=event.target.value;
+    person.name=event.target.value;
 
-   const persons = [...this.state.dogs];
-   persons[personIndex] = person;
+    const persons = [...this.state.dogs];
+    persons[personIndex] = person;
 
 
-   this.setState({dogs: persons});
- }
+    this.setState({dogs: persons});
+  }
 
- tpHandler = () => {
-   const doesShow = this.state.showPersons;
-   this.setState({showPersons: !doesShow});
- }
+  tpHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow});
+  }
 
   render() {
-
-    let btnClass='';
-
     // const style={      //react inline style
     // backgroundColor: 'green',
     // color: 'white',
@@ -55,22 +52,21 @@ this.setState({dogs: persons});
     // padding: '8px',
     // cursor: 'pointer',
     // };
-
+    let btnClass='';
     let persons = null;
 
     if(this.state.showPersons){
       persons = (
         <div>
         {this.state.dogs.map((person,index)=>{
-          return <Person
+          return <ErrorBoundary key={person.id}><Person
           click = {() =>this.deletePersonHandler(index)}
           name={person.name}
           age={person.age}
-          key={person.id}
-          changed={(event)=>this.ncHandler(event, person.id)}/>
+          changed={(event)=>this.ncHandler(event, person.id)}/> </ErrorBoundary>
         })} {/* have to convert array of objects to array (vanilla js gives map func)*/}
 
-      </div>
+        </div>
       );
       // style.backgroundColor = 'red';
       btnClass = classes.Red;
@@ -85,16 +81,16 @@ this.setState({dogs: persons});
     if(this.state.dogs.length <= 1){
       assignedClasses.push(classes.bold); //classes = ['red',bold]
     }
-//all jsx
+    //all jsx
     return (
 
       <div className={classes.App}>
-    <h1> Hi, I am a react app</h1>
-    <p className={assignedClasses.join(' ')}>This is really working! </p>
-    <button className={btnClass}
-  //style={style} //this is where your react inline style goes
-    onClick={this.tpHandler}>Toggle person</button>
-    {persons}
+      <h1> Hi, I am a react app</h1>
+      <p className={assignedClasses.join(' ')}>This is really working! </p>
+      <button className={btnClass}
+      //style={style} //this is where your react inline style goes
+      onClick={this.tpHandler}>Toggle person</button>
+      {persons}
       </div>
 
     );
